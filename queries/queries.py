@@ -186,185 +186,466 @@ class Table:
         self.create_score_table()
 
 
-class QueryDepartment:
-    def __init__(self):
-        self.db = Database()
-
+class QueryUsers:
     @staticmethod
     @log_decorator
-    def insert_department_table(name, address, phone_number, email, password):
+    def insert_user_table(first_name, last_name, email, phone_number, username, password):
         """
-        Insert a new department into the company table.
+        Insert a new user into the users table.
         """
         query = """
-        INSERT INTO company (name, address, phone_number, email,password)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO users (first_name, last_name, email, phone_number, username, password) VALUES (%s, %s, %s, %s, %s, %s)
         """
-        params = (name, address, phone_number, email, password)
+        params = (first_name, last_name, email, phone_number, username, password)
         execute_query(query, params=params)
         return None
 
     @staticmethod
     @log_decorator
-    def update_department_table(id, name, address, phone_number, email, password):
+    def update_user_table(user_id, first_name=None, last_name=None, email=None, phone_number=None,
+                          username=None, password=None):
         """
-        Update a department in the company table.
-        """
-        query = "UPDATE company SET name=%s, address=%s, phone_number=%s, email=%s, password=%s WHERE id=%s"
-        params = (name, address, phone_number, email, password, id)
-        execute_query(query, params=params)
-        return None
-
-    @staticmethod
-    @log_decorator
-    def delete_department_table(id):
-        """
-        Delete a department from the company table.
-        """
-        query = "DELETE FROM company WHERE id=%s"
-        params = (id,)
-        execute_query(query, params=params)
-        return None
-
-    @staticmethod
-    @log_decorator
-    def view_departments_by_id(id):
-        """
-        Select a department from the company table by id.
-        """
-        query = "SELECT * FROM company WHERE id=%s"
-        params = (id,)
-        result = execute_query(query, params=params, fetch="one")
-        return result
-
-    @staticmethod
-    @log_decorator
-    def view_all_departments():
-        """
-        Select all departments from the company table.
-        """
-        query = "SELECT * FROM company"
-        result = execute_query(query, fetch="all")
-        return result
-
-
-class QueryEmployees:
-    @staticmethod
-    @log_decorator
-    def insert_employee_table(first_name, last_name, email, phone_number, username, password,
-                              company_id, start_time='09:00:00', end_time='18:00:00'):
-        """
-        Insert a new employee into the employee table.
+        Update an existing user in the users table.
         """
         query = """
-        INSERT INTO employee (first_name, last_name, email, phone_number, username, password, company, start_time, 
-        end_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """
-        params = (
-            first_name, last_name, email, phone_number, username, password, company_id, start_time, end_time)
+        UPDATE users SET """
+        params = []
+        if first_name:
+            query += "first_name=%s,"
+            params.append(first_name)
+        if last_name:
+            query += "last_name=%s,"
+            params.append(last_name)
+        if email:
+            query += "email=%s,"
+            params.append(email)
+        if phone_number:
+            query += "phone_number=%s,"
+            params.append(phone_number)
+        if username:
+            query += "username=%s,"
+            params.append(username)
+        if password:
+            query += "password=%s,"
+            params.append(password)
+        query = query[:-1] + " WHERE id=%s"
+        params.append(user_id)
         execute_query(query, params=params)
         return None
 
     @staticmethod
     @log_decorator
-    def update_employee_table(employee_id, first_name, last_name, email, phone_number, username, password,
-                              company_id):
+    def delete_user_table(user_id):
         """
-        Update an employee in the employee table.
+        Delete a user from the users table.
+        """
+        query = "DELETE FROM users WHERE id=%s"
+        execute_query(query, params=(user_id,))
+        return None
+
+    @staticmethod
+    @log_decorator
+    def get_user_by_id(user_id):
+        """
+        Get a user from the users table by id.
+        """
+        query = "SELECT * FROM users WHERE id=%s"
+        result = execute_query(query, fetch='one', params=(user_id,))
+        return result
+
+    @staticmethod
+    @log_decorator
+    def get_user_by_username(username):
+        """
+        Get a user from the users table by username.
+        """
+        query = "SELECT * FROM users WHERE username=%s"
+        result = execute_query(query, fetch='one', params=(username,))
+        return result
+
+    @staticmethod
+    @log_decorator
+    def get_all_users():
+        """
+        Get all users from the users table.
+        """
+        query = "SELECT * FROM users"
+        result = execute_query(query, fetch='all')
+        return result
+
+    @staticmethod
+    @log_decorator
+    def authenticate_user(username, password):
+        """
+        Authenticate a user by username and password.
+        """
+        query = "SELECT * FROM users WHERE username=%s AND password=%s"
+        result = execute_query(query, fetch='one', params=(username, password,))
+        return result
+
+
+class QueryTests:
+    @staticmethod
+    @log_decorator
+    def insert_test_table(user_id, name, status=False):
+        """
+        Insert a new test into the test table.
         """
         query = """
-        UPDATE employee SET first_name=%s, last_name=%s, email=%s, phone_number=%s, username=%s, password=%s, 
-        company=%s WHERE id=%s
+        INSERT INTO test (user_id, name, status) VALUES (%s, %s, %s)
         """
-        params = (
-            first_name, last_name, email, phone_number, username, password, company_id, employee_id)
+        params = (user_id, name, status)
         execute_query(query, params=params)
         return None
 
     @staticmethod
     @log_decorator
-    def delete_employee_table(employee_id):
+    def update_test_table(test_id, name=None, status=None):
         """
-        Delete an employee from the employee table.
+        Update an existing test in the test table.
         """
-        query = "DELETE FROM employee WHERE id=%s"
-        execute_query(query, params=(employee_id,))
+        query = """
+        UPDATE test SET """
+        params = []
+        if name:
+            query += "name=%s,"
+            params.append(name)
+        if status:
+            query += "status=%s,"
+            params.append(status)
+        query = query[:-1] + " WHERE id=%s"
+        params.append(test_id)
+        execute_query(query, params=params)
         return None
 
     @staticmethod
     @log_decorator
-    def search_employee_by_email(email):
+    def delete_test_table(test_id):
         """
-        Retrieve employee data by email.
+        Delete a test from the test table.
         """
-        query = "SELECT * FROM employee WHERE email=%s"
-        result = execute_query(query, fetch='one', params=(email,))
+        query = "DELETE FROM test WHERE id=%s"
+        execute_query(query, params=(test_id,))
+        return None
+
+    @staticmethod
+    @log_decorator
+    def get_test_by_id(test_id):
+        """
+        Get a test from the test table by id.
+        """
+        query = "SELECT * FROM test WHERE id=%s"
+        result = execute_query(query, fetch='one', params=(test_id,))
         return result
 
     @staticmethod
     @log_decorator
-    def get_employee_by_phone_number(phone_number):
+    def get_all_tests_by_user_id(user_id):
         """
-        Retrieve employee data by phone number.
+        Get all tests from the test table by user id.
         """
-        query = "SELECT * FROM employee WHERE phone_number=%s"
-        result = execute_query(query, fetch='one', params=(phone_number,))
+        query = "SELECT * FROM test WHERE user_id=%s"
+        result = execute_query(query, fetch='all', params=(user_id,))
         return result
 
-    # @staticmethod
-    # @log_decorator
-    # def get_employee_by_name(first_name, last_name):
-    #     """
-    #     Retrieve employee data by first name and last name.
-    #     """
-    #     query = "SELECT * FROM employee WHERE first_name=%s AND last_name=%s"
-    #     result = execute_query(query, fetch='one', params=(first_name, last_name,))
-    #     return result
-
     @staticmethod
     @log_decorator
-    def change_employee_password(id, old_password, new_password):
+    def get_active_test_by_user_id(user_id):
         """
-        Change employee password.
+        Get the active test from the test table by user id.
         """
-        query = "UPDATE employee SET password_hash=%s WHERE id=%s AND password_hash=%s"
-        params = (new_password, id, old_password)
-        execute_query(query, params=params)
-        return None
-
-
-class QueryWorkSessions:
-    def __init__(self):
-        self.db = Database()
-
-    @staticmethod
-    @log_decorator
-    def insert_work_session(employee_id, start_time):
-        """
-        Insert a new work session into the work_session table.
-        """
-        query = "INSERT INTO work_session (employee_id, start_time) VALUES (%s, %s)"
-        params = (employee_id, start_time)
-        execute_query(query, params=params)
-        return None
-
-    @staticmethod
-    @log_decorator
-    def update_work_session(session_id, end_time):
-        """
-        Update a work session in the work_session table.
-        """
-        query = "UPDATE work_session SET end_time=%s WHERE id=%s"
-        params = (end_time, session_id)
-        execute_query(query, params=params)
-        return None
-
-    @staticmethod
-    @log_decorator
-    def get_employee_work_sessions(employee_id):
-        """
-        Retrieve work sessions for a specific employee.
-        """
-        query = "SELECT * FROM work_session WHERE employee_id=%s ORDER BY start_time DESC"
-        result = execute_query(query, fetch="all", params=(employee_id,))
+        query = "SELECT * FROM test WHERE user_id=%s AND status=True"
+        result = execute_query(query, fetch='one', params=(user_id,))
         return result
+
+
+class QueryQuestions:
+    @staticmethod
+    @log_decorator
+    def insert_question_table(test_id, question):
+        """
+        Insert a new question into the question table.
+        """
+        query = """
+        INSERT INTO question (test_id, question) VALUES (%s, %s)
+        """
+        params = (test_id, question)
+        execute_query(query, params=params)
+        return None
+
+    @staticmethod
+    @log_decorator
+    def update_question_table(question_id, question=None):
+        """
+        Update an existing question in the question table.
+        """
+        query = """
+        UPDATE question SET """
+        params = []
+        if question:
+            query += "question=%s,"
+            params.append(question)
+        query = query[:-1] + " WHERE id=%s"
+        params.append(question_id)
+        execute_query(query, params=params)
+        return None
+
+    @staticmethod
+    @log_decorator
+    def delete_question_table(question_id):
+        """
+        Delete a question from the question table.
+        """
+        query = "DELETE FROM question WHERE id=%s"
+        execute_query(query, params=(question_id,))
+        return None
+
+    @staticmethod
+    @log_decorator
+    def get_question_by_id(question_id):
+        """
+        Get a question from the question table by id.
+        """
+        query = "SELECT * FROM question WHERE id=%s"
+        result = execute_query(query, fetch='one', params=(question_id,))
+        return result
+
+    @staticmethod
+    @log_decorator
+    def get_all_questions_by_test_id(test_id):
+        """
+        Get all questions from the question table by test id.
+        """
+        query = "SELECT * FROM question WHERE test_id=%s"
+        result = execute_query(query, fetch='all', params=(test_id,))
+        return result
+
+
+class QueryOptions:
+    @staticmethod
+    @log_decorator
+    def insert_option_table(question_id, option):
+        """
+        Insert a new option into the option table.
+        """
+        query = """
+        INSERT INTO option (question_id, option) VALUES (%s, %s)
+        """
+        params = (question_id, option)
+        execute_query(query, params=params)
+        return None
+
+    @staticmethod
+    @log_decorator
+    def update_option_table(option_id, option=None):
+        """
+        Update an existing option in the option table.
+        """
+        query = """
+        UPDATE option SET """
+        params = []
+        if option:
+            query += "option=%s,"
+            params.append(option)
+        query = query[:-1] + " WHERE id=%s"
+        params.append(option_id)
+        execute_query(query, params=params)
+        return None
+
+    @staticmethod
+    @log_decorator
+    def delete_option_table(option_id):
+        """
+        Delete an option from the option table.
+        """
+        query = "DELETE FROM option WHERE id=%s"
+        execute_query(query, params=(option_id,))
+        return None
+
+    @staticmethod
+    @log_decorator
+    def get_option_by_id(option_id):
+        """
+        Get an option from the option table by id.
+        """
+        query = "SELECT * FROM option WHERE id=%s"
+        result = execute_query(query, fetch='one', params=(option_id,))
+        return result
+
+    @staticmethod
+    @log_decorator
+    def get_all_options_by_question_id(question_id):
+        """
+        Get all options from the option table by question id.
+        """
+        query = "SELECT * FROM option WHERE question_id=%s"
+        result = execute_query(query, fetch='all', params=(question_id,))
+        return result
+
+    @staticmethod
+    @log_decorator
+    def get_correct_options_by_question_id(question_id):
+        """
+        Get all correct options from the option table by question id.
+        """
+        query = "SELECT * FROM option WHERE question_id=%s AND is_correct=True"
+        result = execute_query(query, fetch='all', params=(question_id,))
+        return result
+
+    @staticmethod
+    @log_decorator
+    def get_incorrect_options_by_question_id(question_id):
+        """
+        Get all incorrect options from the option table by question id.
+        """
+        query = "SELECT * FROM option WHERE question_id=%s AND is_correct=False"
+        result = execute_query(query, fetch='all', params=(question_id,))
+        return result
+
+
+class QueryAttempts:
+    @staticmethod
+    @log_decorator
+    def insert_attempt_table(user_id, test_id):
+        """
+        Insert a new attempt into the attempt table.
+        """
+        query = """
+        INSERT INTO attempt (user_id, test_id) VALUES (%s, %s)
+        """
+        params = (user_id, test_id)
+        execute_query(query, params=params)
+        return None
+
+    @staticmethod
+    @log_decorator
+    def update_attempt_table(attempt_id, score=None):
+        """
+        Update an existing attempt in the attempt table.
+        """
+        query = """
+        UPDATE attempt SET """
+        params = []
+        if score:
+            query += "score=%s,"
+            params.append(score)
+        query = query[:-1] + " WHERE id=%s"
+        params.append(attempt_id)
+        execute_query(query, params=params)
+        return None
+
+    @staticmethod
+    @log_decorator
+    def delete_attempt_table(attempt_id):
+        """
+        Delete an attempt from the attempt table.
+        """
+        query = "DELETE FROM attempt WHERE id=%s"
+        execute_query(query, params=(attempt_id,))
+        return None
+
+    @staticmethod
+    @log_decorator
+    def get_attempt_by_id(attempt_id):
+        """
+        Get an attempt from the attempt table by id.
+        """
+        query = "SELECT * FROM attempt WHERE id=%s"
+        result = execute_query(query, fetch='one', params=(attempt_id,))
+        return result
+
+    @staticmethod
+    @log_decorator
+    def get_all_attempts_by_user_id(user_id):
+        """
+        Get all attempts from the attempt table by user id.
+        """
+        query = "SELECT * FROM attempt WHERE user_id=%s"
+        result = execute_query(query, fetch='all', params=(user_id,))
+        return result
+
+
+class QueryAnswerAttempts:
+    @staticmethod
+    @log_decorator
+    def insert_answer_attempt_table(attempt_id, question_id, option_id):
+        """
+        Insert a new answer attempt into the answer_attempt table.
+        """
+        query = """
+        INSERT INTO answer_attempt (attempt_id, question_id, option_id) VALUES (%s, %s, %s)
+        """
+        params = (attempt_id, question_id, option_id)
+        execute_query(query, params=params)
+        return None
+
+    @staticmethod
+    @log_decorator
+    def update_answer_attempt_table(answer_attempt_id, is_correct=None):
+        """
+        Update an existing answer attempt in the answer_attempt table.
+        """
+        query = """
+        UPDATE answer_attempt SET """
+        params = []
+        if is_correct:
+            query += "is_correct=%s,"
+            params.append(is_correct)
+        query = query[:-1] + " WHERE id=%s"
+        params.append(answer_attempt_id)
+        execute_query(query, params=params)
+        return None
+
+    @staticmethod
+    @log_decorator
+    def delete_answer_attempt_table(answer_attempt_id):
+        """
+        Delete an answer attempt from the answer_attempt table.
+        """
+        query = "DELETE FROM answer_attempt WHERE id=%s"
+        execute_query(query, params=(answer_attempt_id,))
+        return None
+
+    @staticmethod
+    @log_decorator
+    def get_answer_attempt_by_id(answer_attempt_id):
+        """
+        Get an answer attempt from the answer_attempt table by id.
+        """
+        query = "SELECT * FROM answer_attempt WHERE id=%s"
+        result = execute_query(query, fetch='one', params=(answer_attempt_id,))
+        return result
+
+    @staticmethod
+    @log_decorator
+    def get_all_answer_attempts_by_attempt_id(attempt_id):
+        """
+        Get all answer attempts from the answer_attempt table by attempt id.
+        """
+        query = "SELECT * FROM answer_attempt WHERE attempt_id=%s"
+        result = execute_query(query, fetch='all', params=(attempt_id,))
+        return result
+
+
+class QueryScoring:
+    @staticmethod
+    @log_decorator
+    def calculate_score(attempt_id):
+        """
+        Calculate the score for an attempt.
+        """
+        correct_options = QueryAnswerAttempts.get_all_answer_attempts_by_attempt_id(attempt_id)
+        total_questions = len(QueryAnswerAttempts.get_all_answer_attempts_by_attempt_id(attempt_id))
+        score = sum(answer_attempt['is_correct'] for answer_attempt in correct_options) / total_questions
+        QueryAttempts.update_attempt_table(attempt_id, score=score)
+        return score
+
+    @staticmethod
+    @log_decorator
+    def calculate_percentage(attempt_id):
+        """
+        Calculate the percentage for an attempt.
+        """
+        score = QueryScoring.calculate_score(attempt_id)
+        percentage = (score / 1) * 100
+        return percentage
