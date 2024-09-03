@@ -61,7 +61,7 @@ class Auth:
 
     def create_employee_table(self):
         """
-        Create an employee table.
+        Create users table.
         """
         query = """
                     CREATE TABLE IF NOT EXISTS users (

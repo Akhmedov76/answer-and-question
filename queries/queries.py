@@ -6,9 +6,11 @@ class Table:
     def __init__(self):
         self.db = Database()
 
+    @log_decorator
     def create_users_table(self):
         """
-        Create an employee table.
+        Create users table.
+        Created by Jasur use Ai!!!
         """
         query = """
                             CREATE TABLE IF NOT EXISTS users (
@@ -27,12 +29,14 @@ class Table:
             cursor.execute(query)
             return None
 
+    @log_decorator
     def create_test_table(self):
         """
-        Create a company table.
+        Create a test table.
+        Craeted by Jasur use Ai!!!
         """
         query = """
-                    CREATE TABLE IF NOT EXISTS company (
+                    CREATE TABLE IF NOT EXISTS test (
                     id SERIAL PRIMARY KEY,
                     users BIGINT NOT NULL REFERENCES users(id),
                     name VARCHAR(255) NOT NULL,
@@ -44,7 +48,12 @@ class Table:
             cursor.execute(query)
             return None
 
+    @log_decorator
     def create_question_table(self):
+        """
+        Create a new question table
+        Craeted by Jasur use Ai!!!
+        """
         query = """
         CREATE TABLE IF NOT EXISTS question (
             id SERIAL PRIMARY KEY,
@@ -57,12 +66,35 @@ class Table:
             cursor.execute(query)
             return None
 
+    @log_decorator
     def create_option_table(self):
+        """
+        Create a new option table for question table
+        Craeted by Jasur use Ai!!!
+        """
         query = """
-        CREATE TABLE IF NOT EXISTS option (
+        CREATE TABLE IF NOT EXISTS quest_option (
             id SERIAL PRIMARY KEY,
             question BIGINT NOT NULL REFERENCES question(id),
-            name VARCHAR(255) NOT NULL,
+            option_text VARCHAR(255) NOT NULL,
+            correct BOOLEAN NOT NULL DEFAULT FALSE,
+        );
+        """
+        with self.db as cursor:
+            cursor.execute(query)
+            return None
+
+    @log_decorator
+    def create_attempt_table(self):
+        """
+        Create a new attempt table for user and question pairing
+        Craeted by Jasur use Ai!!!
+        """
+        query = """
+        CREATE TABLE IF NOT EXISTS attempt (
+            id SERIAL PRIMARY KEY,
+            user_id BIGINT NOT NULL REFERENCES users(id),
+            question_id BIGINT NOT NULL REFERENCES question(id),
             created_at TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
         );
         """
@@ -70,11 +102,88 @@ class Table:
             cursor.execute(query)
             return None
 
+    @log_decorator
+    def create_answer_table(self):
+        """
+        Create a new answer table for user and question pairing and option selection
+        Craeted by Jasur use Ai!!!
+        """
+        query = """
+        CREATE TABLE IF NOT EXISTS answer (
+            id SERIAL PRIMARY KEY,
+            attempt BIGINT NOT NULL REFERENCES attempt(id),
+            option_id BIGINT NOT NULL REFERENCES quest_option(id),
+            created_at TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
+        );
+        """
+        with self.db as cursor:
+            cursor.execute(query)
+            return None
+
+    @log_decorator
+    def create_incorrect_answer_table(self):
+        """
+        Create a new incorrect answer table for user and question pairing and option selection
+        Craeted by Jasur use Ai!!!
+        """
+        query = """
+        CREATE TABLE IF NOT EXISTS incorrect_answer (
+            id SERIAL PRIMARY KEY,
+            attempt BIGINT NOT NULL REFERENCES attempt(id),
+            option_id BIGINT NOT NULL REFERENCES quest_option(id),
+            created_at TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
+        );
+        """
+        with self.db as cursor:
+            cursor.execute(query)
+            return None
+
+    @log_decorator
+    def create_correct_answer_table(self):
+        """
+        Create a new correct answer table for user and question pairing
+        Craeted by Jasur use Ai!!!
+        """
+        query = """
+        CREATE TABLE IF NOT EXISTS correct_answer (
+            id SERIAL PRIMARY KEY,
+            question BIGINT NOT NULL REFERENCES question(id),
+            created_at TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
+        );
+        """
+        with self.db as cursor:
+            cursor.execute(query)
+            return None
+
+    @log_decorator
+    def create_score_table(self):
+        """
+        Create a new score table for user and test pairing
+        Craeted by Jasur use Ai!!!
+        """
+        query = """
+        CREATE TABLE IF NOT EXISTS score (
+            id SERIAL PRIMARY KEY,
+            user_id BIGINT NOT NULL REFERENCES users(id),
+            test_id BIGINT NOT NULL REFERENCES test(id),
+            created_at TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
+        );
+        """
+        with self.db as cursor:
+            cursor.execute(query)
+            return None
+
+    @log_decorator
     def create_all_table(self):
         self.create_users_table()
         self.create_test_table()
         self.create_question_table()
         self.create_option_table()
+        self.create_attempt_table()
+        self.create_answer_table()
+        self.create_incorrect_answer_table()
+        self.create_correct_answer_table()
+        self.create_score_table()
 
 
 class QueryDepartment:
