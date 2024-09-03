@@ -43,18 +43,48 @@ def view_auth_menu() -> None:
 @log_decorator
 def view_admin_menu() -> None:
     print("""
-1. Show statistics              # Tugalllanmagan
+1. Show statistics
 2. Logout
     """)
     choice: int = int(input("Enter your choice: "))
     if choice == 1:
-        pass
+        view_statistic_menu()
+        view_admin_menu()
     elif choice == 2:
         print("Good bye!")
         view_auth_menu()
     else:
         print("Invalid choice!")
         view_admin_menu()
+
+
+@log_decorator
+def view_statistic_menu() -> None:
+    print("""
+1. Get total questions
+2. Get average test score
+3. Get worst test score
+4. Get top 10 users
+5. Get total attempts
+6. Logout
+    """)
+    choice: int = int(input("Enter your choice: "))
+    if choice == 1:
+        pass
+    elif choice == 2:
+        pass
+    elif choice == 3:
+        pass
+    elif choice == 4:
+        pass
+    elif choice == 5:
+        pass
+    elif choice == 6:
+        print("Good bye!")
+        view_admin_menu()
+    else:
+        print("Invalid choice!")
+        view_statistic_menu()
 
 
 @log_decorator
