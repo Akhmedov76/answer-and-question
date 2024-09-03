@@ -6,18 +6,36 @@ class Table:
     def __init__(self):
         self.db = Database()
 
-    def create_department_table(self):
+    def create_users_table(self):
+        """
+        Create an employee table.
+        """
+        query = """
+                            CREATE TABLE IF NOT EXISTS users (
+                            id SERIAL PRIMARY KEY,
+                            first_name VARCHAR(255) NOT NULL,
+                            last_name VARCHAR(255) NOT NULL,
+                            email VARCHAR(255) UNIQUE NOT NULL,
+                            phone_number VARCHAR(20) NOT NULL,
+                            username VARCHAR(50) UNIQUE NOT NULL,
+                            password VARCHAR(255) NOT NULL,
+                            status BOOLEAN DEFAULT FALSE NOT NULL,
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                            );
+                        """
+        with self.db as cursor:
+            cursor.execute(query)
+            return None
+
+    def create_test_table(self):
         """
         Create a company table.
         """
         query = """
                     CREATE TABLE IF NOT EXISTS company (
                     id SERIAL PRIMARY KEY,
+                    users BIGINT NOT NULL REFERENCES users(id),
                     name VARCHAR(255) NOT NULL,
-                    address VARCHAR(255) NOT NULL,
-                    phone_number VARCHAR(20) NOT NULL,
-                    email VARCHAR(255) UNIQUE NOT NULL,
-                    password VARCHAR(255) UNIQUE NOT NULL,
                     status VARCHAR(255) NOT NULL DEFAULT False,
                     created_at TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
                     );
@@ -26,38 +44,25 @@ class Table:
             cursor.execute(query)
             return None
 
-    def create_employee_table(self):
-        """
-        Create an employee table.
-        """
+    def create_question_table(self):
         query = """
-                    CREATE TABLE IF NOT EXISTS employee (
-                    id SERIAL PRIMARY KEY,
-                    first_name VARCHAR(255) NOT NULL,
-                    last_name VARCHAR(255) NOT NULL,
-                    email VARCHAR(255) UNIQUE NOT NULL,
-                    phone_number VARCHAR(20) NOT NULL,
-                    username VARCHAR(50) UNIQUE NOT NULL,
-                    password VARCHAR(255) NOT NULL,
-                    company BIGINT NOT NULL REFERENCES company(id),
-                    start_time TIMESTAMP NOT NULL,
-                    end_time TIMESTAMP,
-                    status BOOLEAN DEFAULT FALSE NOT NULL,
-                    hire_date TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
-                    );
-                """
+        CREATE TABLE IF NOT EXISTS question (
+            id SERIAL PRIMARY KEY,
+            test BIGINT NOT NULL REFERENCES test(id),
+            name Varchar(255) NOT NULL,
+            created_at TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
+        );
+        """
         with self.db as cursor:
             cursor.execute(query)
             return None
 
-    def create_work_session_table(self):
+    def create_option_table(self):
         query = """
-        CREATE TABLE IF NOT EXISTS work_session (
+        CREATE TABLE IF NOT EXISTS option (
             id SERIAL PRIMARY KEY,
-            employee_id INT REFERENCES employee(id),
-            start_time TIMESTAMP NOT NULL,
-            end_time TIMESTAMP,
-            duration INTERVAL GENERATED ALWAYS AS (end_time - start_time) STORED,
+            question BIGINT NOT NULL REFERENCES question(id),
+            name VARCHAR(255) NOT NULL,
             created_at TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
         );
         """
@@ -66,9 +71,10 @@ class Table:
             return None
 
     def create_all_table(self):
-        self.create_department_table()
-        self.create_employee_table()
-        self.create_work_session_table()
+        self.create_users_table()
+        self.create_test_table()
+        self.create_question_table()
+        self.create_option_table()
 
 
 class QueryDepartment:
