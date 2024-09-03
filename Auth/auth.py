@@ -4,8 +4,8 @@ import hashlib
 from database_config.db_settings import Database, execute_query
 from decorator.decorator import log_decorator
 
-SUPERADMIN_LOGIN = "admin"
-SUPERADMIN_PASSWORD = "admin"
+ADMIN_LOGIN = "admin"
+ADMIN_PASSWORD = "admin"
 
 
 class Auth:
@@ -23,8 +23,8 @@ class Auth:
             email: str = input("Email: ").strip()
             password: str = hashlib.sha256(input("Password: ").strip().encode('utf-8')).hexdigest()
 
-            if email == SUPERADMIN_LOGIN and password == hashlib.sha256(
-                    SUPERADMIN_PASSWORD.encode('utf-8')).hexdigest():
+            if email == ADMIN_LOGIN and password == hashlib.sha256(
+                    ADMIN_PASSWORD.encode('utf-8')).hexdigest():
                 return {'is_login': True, 'role': 'super_admin'}
 
             query = '''
@@ -64,7 +64,7 @@ class Auth:
         Create an employee table.
         """
         query = """
-                    CREATE TABLE IF NOT EXISTS employee (
+                    CREATE TABLE IF NOT EXISTS users (
                     id SERIAL PRIMARY KEY,
                     first_name VARCHAR(255) NOT NULL,
                     last_name VARCHAR(255) NOT NULL,
@@ -72,11 +72,8 @@ class Auth:
                     phone_number VARCHAR(20) NOT NULL,
                     username VARCHAR(50) UNIQUE NOT NULL,
                     password VARCHAR(255) NOT NULL,
-                    start_time TIMESTAMP NOT NULL,
-                    end_time TIMESTAMP,
                     status BOOLEAN DEFAULT FALSE NOT NULL,
-                    company BIGINT NOT NULL REFERENCES company(id),
-                    hire_date TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     );
                 """
         with self.__database as db:

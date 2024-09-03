@@ -25,15 +25,11 @@ def view_auth_menu() -> None:
         if not result_login['is_login']:
             view_auth_menu()
         elif result_login['role'] == 'super_admin':
-            view_super_admin_menu()
-            view_auth_menu()
+            pass
         elif result_login['role'] == 'manager':
-            view_manager_menu()
-            view_auth_menu()
+            pass
         elif result_login['role'] == 'user':
-            view_employee_menu()
-            view_auth_menu()
-        view_auth_menu()
+            pass
     elif user_input == 2:
         print("Good bye!")
         if auth.logout():
@@ -45,136 +41,53 @@ def view_auth_menu() -> None:
 
 
 @log_decorator
-def view_super_admin_menu() -> None:
+def view_admin_menu() -> None:
     print("""
-1. Manage departments 
-2. Show statistics              # Tugalllanmagan
-3. Logout
+1. Show statistics              # Tugalllanmagan
+2. Logout
     """)
     choice: int = int(input("Enter your choice: "))
     if choice == 1:
-        view_company_name()
-        view_super_admin_menu()
-    elif choice == 2:
         pass
-    elif choice == 3:
+    elif choice == 2:
         print("Good bye!")
         view_auth_menu()
     else:
         print("Invalid choice!")
-        view_super_admin_menu()
+        view_admin_menu()
 
 
 @log_decorator
-def view_company_name() -> None:
+def view_users_menu() -> None:
     print("""
-1. Add new company
-2. Update company
-3. Delete company
-4. Show all company
+1. Create a new test
+2. Update test
+3. Delete test
+4. Show all tests
 5. Logout
     """)
     choice: int = int(input("Enter your choice: "))
     if choice == 1:
-        if admin.add_department():
-            view_company_name()
-        else:
-            view_company_name()
-    elif choice == 2:
-        admin.update_department()
-        view_company_name()
-    elif choice == 3:
-        admin.delete_department()
-        view_company_name()
-    elif choice == 4:
-        view_all_departments()
-        view_company_name()
-    elif choice == 5:
-        print("Good bye!")
-        view_super_admin_menu()
-    else:
-        print("Invalid choice!")
-        view_company_name()
-
-
-@log_decorator
-def view_all_departments() -> None:
-    print("""
-1. View all company
-2. View company by ID
-3. Logout
-    """)
-    choice: int = int(input("Enter your choice: "))
-    if choice == 1:
-        admin.view_all_departments()
-        view_all_departments()
-    elif choice == 2:
-        admin.view_department_by_id()
-        view_all_departments()
-    elif choice == 3:
-        print("Good bye!")
-        view_super_admin_menu()
-
-
-@log_decorator
-def view_manager_menu() -> None:
-    print("""
-1. Manage Employees
-2. Show statistics              # Tugalllanmagan
-3. Logout
-    """)
-    choice: int = int(input("Enter your choice: "))
-    if choice == 1:
-        view_main_menu()
-        view_manager_menu()
+        pass
     elif choice == 2:
         pass
     elif choice == 3:
-        print("Good bye!")
-        view_auth_menu()
-
-
-@log_decorator
-def view_main_menu() -> None:
-    print("""
-1. Add new employees
-2. Update employees
-3. Delete employees
-4. Show all employees
-5. Logout
-    """)
-    choice: int = int(input("Enter your choice: "))
-    if choice == 1:
-        employees.add_employees()
-        view_main_menu()
-    elif choice == 2:
-        employees.update_employee()
-        view_main_menu()
-    elif choice == 3:
-        employees.delete_employee()
-        view_main_menu()
-    elif choice == 4:
-        employees.show_all_employees()
-        view_main_menu()
-    elif choice == 5:
         pass
-    elif choice == 6:
+    elif choice == 4:
         print("Good bye!")
-        view_auth_menu()
+        view_admin_menu()
     else:
         print("Invalid choice!")
-        view_main_menu()
+        view_users_menu()
 
 
 @log_decorator
-def view_employee_menu() -> None:
+def view_choice_menu() -> None:
     print("""
-1. Start work
-2. End work
-3. Show statistics                  # Tugalllanmagan
-4. Show my data
-5. Change password
-6. Logout
+1. Join test
+2. Show all tests
+3. My results
+4. Logout
     """)
     choice: int = int(input("Enter your choice: "))
     if choice == 1:
@@ -184,15 +97,11 @@ def view_employee_menu() -> None:
     elif choice == 3:
         pass
     elif choice == 4:
-        pass
-    elif choice == 5:
-        pass
-    elif choice == 6:
         print("Good bye!")
-        view_auth_menu()
+        view_choice_menu()
     else:
         print("Invalid choice!")
-        view_employee_menu()
+        view_choice_menu()
 
 
 if __name__ == '__main__':
