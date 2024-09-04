@@ -13,20 +13,21 @@ class Table:
         Created by Jasur use Ai!!!
         """
         query = """
-                            CREATE TABLE IF NOT EXISTS users (
-                            id SERIAL PRIMARY KEY,
-                            first_name VARCHAR(255) NOT NULL,
-                            last_name VARCHAR(255) NOT NULL,
-                            email VARCHAR(255) UNIQUE NOT NULL,
-                            phone_number VARCHAR(20) NOT NULL,
-                            username VARCHAR(50) UNIQUE NOT NULL,
-                            password VARCHAR(255) NOT NULL,
-                            status BOOLEAN DEFAULT FALSE NOT NULL,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            );
-                        """
+                                CREATE TABLE IF NOT EXISTS users (
+                                id SERIAL PRIMARY KEY,
+                                first_name VARCHAR(255) NOT NULL,
+                                last_name VARCHAR(255) NOT NULL,
+                                email VARCHAR(255) UNIQUE NOT NULL,
+                                phone_number VARCHAR(20) NOT NULL,
+                                username VARCHAR(50) UNIQUE NOT NULL,
+                                password VARCHAR(255) NOT NULL,
+                                status BOOLEAN DEFAULT FALSE NOT NULL,
+                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                                );
+                            """
         with self.db as cursor:
             cursor.execute(query)
+            print("nnn")
             return None
 
     @log_decorator
@@ -36,16 +37,17 @@ class Table:
         Craeted by Jasur use Ai!!!
         """
         query = """
-                    CREATE TABLE IF NOT EXISTS test (
-                    id SERIAL PRIMARY KEY,
-                    users BIGINT NOT NULL REFERENCES users(id),
-                    name VARCHAR(255) NOT NULL,
-                    status VARCHAR(255) NOT NULL DEFAULT False,
-                    created_at TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
-                    );
-                    """
+                        CREATE TABLE IF NOT EXISTS test (
+                        id SERIAL PRIMARY KEY,
+                        users BIGINT NOT NULL REFERENCES users(id),
+                        name VARCHAR(255) NOT NULL,
+                        status BOOLEAN NOT NULL DEFAULT FALSE,
+                        created_at TIMESTAMP DEFAULT DATE_TRUNC('minute', NOW())
+                        );
+                        """
         with self.db as cursor:
             cursor.execute(query)
+            print("xato")
             return None
 
     @log_decorator
@@ -64,6 +66,7 @@ class Table:
         """
         with self.db as cursor:
             cursor.execute(query)
+            print("asaas")
             return None
 
     @log_decorator
@@ -73,15 +76,16 @@ class Table:
         Craeted by Jasur use Ai!!!
         """
         query = """
-        CREATE TABLE IF NOT EXISTS quest_option (
-            id SERIAL PRIMARY KEY,
-            question BIGINT NOT NULL REFERENCES question(id),
-            option_text VARCHAR(255) NOT NULL,
-            correct BOOLEAN NOT NULL DEFAULT FALSE,
-        );
-        """
+            CREATE TABLE IF NOT EXISTS quest_option (
+                id SERIAL PRIMARY KEY,
+                question BIGINT NOT NULL REFERENCES question(id),
+                option_text VARCHAR(255) NOT NULL,
+                correct BOOLEAN NOT NULL DEFAULT FALSE
+            );
+            """
         with self.db as cursor:
             cursor.execute(query)
+            print("asdd")
             return None
 
     @log_decorator
@@ -100,6 +104,7 @@ class Table:
         """
         with self.db as cursor:
             cursor.execute(query)
+            print("Attempt")
             return None
 
     @log_decorator
@@ -118,6 +123,7 @@ class Table:
         """
         with self.db as cursor:
             cursor.execute(query)
+            print("Insert")
             return None
 
     @log_decorator
@@ -136,6 +142,7 @@ class Table:
         """
         with self.db as cursor:
             cursor.execute(query)
+            print("sdqwqse")
             return None
 
     @log_decorator
@@ -153,6 +160,7 @@ class Table:
         """
         with self.db as cursor:
             cursor.execute(query)
+            print("adaqew")
             return None
 
     @log_decorator
@@ -171,6 +179,7 @@ class Table:
         """
         with self.db as cursor:
             cursor.execute(query)
+            print("wewre")
             return None
 
     @log_decorator
@@ -292,8 +301,8 @@ class QueryTests:
         Insert a new test into the test table.
         """
         query = """
-        INSERT INTO test (user_id, name, status) VALUES (%s, %s, %s)
-        """
+            INSERT INTO test (users, name, status) VALUES (%s, %s, %s)
+            """
         params = (user_id, name, status)
         execute_query(query, params=params)
         return None
@@ -429,8 +438,8 @@ class QueryOptions:
         Insert a new option into the option table.
         """
         query = """
-        INSERT INTO option (question_id, option) VALUES (%s, %s)
-        """
+                INSERT INTO quest_option (question_id, option_text) VALUES (%s, %s)
+                """
         params = (question_id, option)
         execute_query(query, params=params)
         return None
@@ -658,13 +667,9 @@ class show_all_statistics:
         """
         Get the total number of questions in the question table.
         """
-        try:
-            query = "SELECT COUNT(*) FROM question"
-            result = execute_query(query, fetch='one')
-            return result['count']
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        query = "SELECT COUNT(*) FROM question"
+        result = execute_query(query, fetch='one')
+        return result['count']
 
     @staticmethod
     @log_decorator
@@ -672,13 +677,9 @@ class show_all_statistics:
         """
         Get the total number of options in the option table.
         """
-        try:
-            query = "SELECT COUNT(*) FROM option"
-            result = execute_query(query, fetch='one')
-            return result['count']
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        query = "SELECT COUNT(*) FROM option"
+        result = execute_query(query, fetch='one')
+        return result['count']
 
     @staticmethod
     @log_decorator
@@ -686,13 +687,9 @@ class show_all_statistics:
         """
         Get the total number of attempts in the attempt table.
         """
-        try:
-            query = "SELECT COUNT(*) FROM attempt"
-            result = execute_query(query, fetch='one')
-            return result['count']
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        query = "SELECT COUNT(*) FROM attempt"
+        result = execute_query(query, fetch='one')
+        return result['count']
 
     @staticmethod
     @log_decorator
@@ -700,14 +697,10 @@ class show_all_statistics:
         """
         Get the average score of all attempts.
         """
-        try:
-            attempts = QueryAttempts.get_all_attempts_by_user_id(None)
-            total_score = sum(attempt['score'] for attempt in attempts)
-            average_score = total_score / len(attempts) if attempts else 0
-            return average_score
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        attempts = QueryAttempts.get_all_attempts_by_user_id(None)
+        total_score = sum(attempt['score'] for attempt in attempts)
+        average_score = total_score / len(attempts) if attempts else 0
+        return average_score
 
     @staticmethod
     @log_decorator
@@ -715,20 +708,16 @@ class show_all_statistics:
         """
         Get the top 10 users with the highest average score.
         """
-        try:
-            query = """
-            SELECT user.id, user.username, AVG(attempt.score) as average_score
-            FROM user
-            JOIN attempt ON user.id = attempt.user_id
-            GROUP BY user.id, user.username
-            ORDER BY average_score DESC
-            LIMIT 10
-            """
-            result = execute_query(query, fetch='all')
-            return result
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        query = """
+        SELECT user.id, user.username, AVG(attempt.score) as average_score
+        FROM user
+        JOIN attempt ON user.id = attempt.user_id
+        GROUP BY user.id, user.username
+        ORDER BY average_score DESC
+        LIMIT 10
+        """
+        result = execute_query(query, fetch='all')
+        return result
 
     @staticmethod
     @log_decorator
@@ -736,20 +725,16 @@ class show_all_statistics:
         """
         Get the top 10 users with the lowest average score.
         """
-        try:
-            query = """
-            SELECT user.id, user.username, AVG(attempt.score) as average_score
-            FROM user
-            JOIN attempt ON user.id = attempt.user_id
-            GROUP BY user.id, user.username
-            ORDER BY average_score ASC
-            LIMIT 10
-            """
-            result = execute_query(query, fetch='all')
-            return result
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        query = """
+        SELECT user.id, user.username, AVG(attempt.score) as average_score
+        FROM user
+        JOIN attempt ON user.id = attempt.user_id
+        GROUP BY user.id, user.username
+        ORDER BY average_score ASC
+        LIMIT 10
+        """
+        result = execute_query(query, fetch='all')
+        return result
 
     @staticmethod
     @log_decorator
@@ -757,19 +742,15 @@ class show_all_statistics:
         """
         Get the top 10 users who answered the most questions correctly.
         """
-        try:
-            query = """
-            SELECT user.id, user.username, COUNT(answer_attempt.is_correct) as correct_answers
-            FROM user
-            JOIN attempt ON user.id = attempt.user_id
-            JOIN answer_attempt ON attempt.id = answer_attempt.attempt_id
-            WHERE answer_attempt.is_correct = True
-            GROUP BY user.id, user.username
-            ORDER BY correct_answers DESC
-            LIMIT 10
-            """
-            result = execute_query(query, fetch='all')
-            return result
-        except Exception as e:
-            print(f"An error occurred: {e}")
-            return None
+        query = """
+        SELECT user.id, user.username, COUNT(answer_attempt.is_correct) as correct_answers
+        FROM user
+        JOIN attempt ON user.id = attempt.user_id
+        JOIN answer_attempt ON attempt.id = answer_attempt.attempt_id
+        WHERE answer_attempt.is_correct = True
+        GROUP BY user.id, user.username
+        ORDER BY correct_answers DESC
+        LIMIT 10
+        """
+        result = execute_query(query, fetch='all')
+        return result

@@ -1,18 +1,12 @@
 import threading
 
 from decorator.decorator import log_decorator
-# from role.super_admin.sup_admin import AdminManager
-# from role.employees_for_admin.employees import Employees
 from queries.queries import show_all_statistics
 from Auth.auth import Auth
 from queries.queries import Table
 
 auth = Auth
 statistics = show_all_statistics()
-
-
-# employees = Employees()
-# admin = AdminManager()
 
 
 @log_decorator
@@ -26,7 +20,7 @@ def view_auth_menu() -> None:
         result_login = auth.login()
         if not result_login['is_login']:
             view_auth_menu()
-        elif result_login['role'] == 'super_admin':
+        elif result_login['role'] == 'admin':
             pass
         elif result_login['role'] == 'manager':
             pass

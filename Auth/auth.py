@@ -25,7 +25,7 @@ class Auth:
 
             if email == ADMIN_LOGIN and password == hashlib.sha256(
                     ADMIN_PASSWORD.encode('utf-8')).hexdigest():
-                return {'is_login': True, 'role': 'super_admin'}
+                return {'is_login': True, 'role': 'admin'}
 
             query = '''
             SELECT * FROM employee WHERE email=%s AND password=%s
