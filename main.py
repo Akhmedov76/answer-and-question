@@ -3,10 +3,12 @@ import threading
 from decorator.decorator import log_decorator
 # from role.super_admin.sup_admin import AdminManager
 # from role.employees_for_admin.employees import Employees
+from queries.queries import show_all_statistics
 from Auth.auth import Auth
 from queries.queries import Table
 
 auth = Auth
+statistics = show_all_statistics()
 
 
 # employees = Employees()
@@ -70,11 +72,32 @@ def view_statistic_menu() -> None:
     """)
     choice: int = int(input("Enter your choice: "))
     if choice == 1:
-        pass
+        if statistics.get_total_questions() > 0:
+            print("Total questions:", statistics.get_total_questions())
+            view_statistic_menu()
+            threading.Timer(3.0, view_statistic_menu).start()
+        else:
+            print("No questions found!")
+            view_statistic_menu()
+            threading.Timer(3.0, view_statistic_menu).start()
     elif choice == 2:
-        pass
+        if statistics.get_average_score():
+            print("Average test score:", statistics.get_average_score())
+            view_statistic_menu()
+            threading.Timer(3.0, view_statistic_menu).start()
+        else:
+            print("No test scores found!")
+            view_statistic_menu()
+            threading.Timer(3.0, view_statistic_menu).start()
     elif choice == 3:
-        pass
+        if statistics.get_worst_performers():
+            print("Worst test score:", statistics.get_worst_performers())
+            view_statistic_menu()
+            threading.Timer(3.0, view_statistic_menu).start()
+        else:
+            print("No test scores found!")
+            view_statistic_menu()
+            threading.Timer(3.0, view_statistic_menu).start()
     elif choice == 4:
         pass
     elif choice == 5:

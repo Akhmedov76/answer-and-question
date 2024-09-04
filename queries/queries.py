@@ -658,9 +658,13 @@ class show_all_statistics:
         """
         Get the total number of questions in the question table.
         """
-        query = "SELECT COUNT(*) FROM question"
-        result = execute_query(query, fetch='one')
-        return result['count']
+        try:
+            query = "SELECT COUNT(*) FROM question"
+            result = execute_query(query, fetch='one')
+            return result['count']
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
 
     @staticmethod
     @log_decorator
@@ -668,9 +672,13 @@ class show_all_statistics:
         """
         Get the total number of options in the option table.
         """
-        query = "SELECT COUNT(*) FROM option"
-        result = execute_query(query, fetch='one')
-        return result['count']
+        try:
+            query = "SELECT COUNT(*) FROM option"
+            result = execute_query(query, fetch='one')
+            return result['count']
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
 
     @staticmethod
     @log_decorator
@@ -678,9 +686,13 @@ class show_all_statistics:
         """
         Get the total number of attempts in the attempt table.
         """
-        query = "SELECT COUNT(*) FROM attempt"
-        result = execute_query(query, fetch='one')
-        return result['count']
+        try:
+            query = "SELECT COUNT(*) FROM attempt"
+            result = execute_query(query, fetch='one')
+            return result['count']
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
 
     @staticmethod
     @log_decorator
@@ -688,10 +700,14 @@ class show_all_statistics:
         """
         Get the average score of all attempts.
         """
-        attempts = QueryAttempts.get_all_attempts_by_user_id(None)
-        total_score = sum(attempt['score'] for attempt in attempts)
-        average_score = total_score / len(attempts) if attempts else 0
-        return average_score
+        try:
+            attempts = QueryAttempts.get_all_attempts_by_user_id(None)
+            total_score = sum(attempt['score'] for attempt in attempts)
+            average_score = total_score / len(attempts) if attempts else 0
+            return average_score
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
 
     @staticmethod
     @log_decorator
@@ -699,16 +715,20 @@ class show_all_statistics:
         """
         Get the top 10 users with the highest average score.
         """
-        query = """
-        SELECT user.id, user.username, AVG(attempt.score) as average_score
-        FROM user
-        JOIN attempt ON user.id = attempt.user_id
-        GROUP BY user.id, user.username
-        ORDER BY average_score DESC
-        LIMIT 10
-        """
-        result = execute_query(query, fetch='all')
-        return result
+        try:
+            query = """
+            SELECT user.id, user.username, AVG(attempt.score) as average_score
+            FROM user
+            JOIN attempt ON user.id = attempt.user_id
+            GROUP BY user.id, user.username
+            ORDER BY average_score DESC
+            LIMIT 10
+            """
+            result = execute_query(query, fetch='all')
+            return result
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
 
     @staticmethod
     @log_decorator
@@ -716,16 +736,20 @@ class show_all_statistics:
         """
         Get the top 10 users with the lowest average score.
         """
-        query = """
-        SELECT user.id, user.username, AVG(attempt.score) as average_score
-        FROM user
-        JOIN attempt ON user.id = attempt.user_id
-        GROUP BY user.id, user.username
-        ORDER BY average_score ASC
-        LIMIT 10
-        """
-        result = execute_query(query, fetch='all')
-        return result
+        try:
+            query = """
+            SELECT user.id, user.username, AVG(attempt.score) as average_score
+            FROM user
+            JOIN attempt ON user.id = attempt.user_id
+            GROUP BY user.id, user.username
+            ORDER BY average_score ASC
+            LIMIT 10
+            """
+            result = execute_query(query, fetch='all')
+            return result
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
 
     @staticmethod
     @log_decorator
@@ -733,15 +757,19 @@ class show_all_statistics:
         """
         Get the top 10 users who answered the most questions correctly.
         """
-        query = """
-        SELECT user.id, user.username, COUNT(answer_attempt.is_correct) as correct_answers
-        FROM user
-        JOIN attempt ON user.id = attempt.user_id
-        JOIN answer_attempt ON attempt.id = answer_attempt.attempt_id
-        WHERE answer_attempt.is_correct = True
-        GROUP BY user.id, user.username
-        ORDER BY correct_answers DESC
-        LIMIT 10
-        """
-        result = execute_query(query, fetch='all')
-        return result
+        try:
+            query = """
+            SELECT user.id, user.username, COUNT(answer_attempt.is_correct) as correct_answers
+            FROM user
+            JOIN attempt ON user.id = attempt.user_id
+            JOIN answer_attempt ON attempt.id = answer_attempt.attempt_id
+            WHERE answer_attempt.is_correct = True
+            GROUP BY user.id, user.username
+            ORDER BY correct_answers DESC
+            LIMIT 10
+            """
+            result = execute_query(query, fetch='all')
+            return result
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            return None
