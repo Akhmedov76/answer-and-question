@@ -99,9 +99,23 @@ def view_statistic_menu() -> None:
             view_statistic_menu()
             threading.Timer(3.0, view_statistic_menu).start()
     elif choice == 4:
-        pass
+        if statistics.get_top_performers():
+            print("Top 10 users:", statistics.get_top_performers())
+            view_statistic_menu()
+            threading.Timer(3.0, view_statistic_menu).start()
+        else:
+            print("No users found!")
+            view_statistic_menu()
+            threading.Timer(3.0, view_statistic_menu).start()
     elif choice == 5:
-        pass
+        if statistics.get_total_attempts() > 0:
+            print("Total attempts:", statistics.get_total_attempts())
+            view_statistic_menu()
+            threading.Timer(3.0, view_statistic_menu).start()
+        else:
+            print("No attempts found!")
+            view_statistic_menu()
+            threading.Timer(3.0, view_statistic_menu).start()
     elif choice == 6:
         print("Good bye!")
         view_admin_menu()
